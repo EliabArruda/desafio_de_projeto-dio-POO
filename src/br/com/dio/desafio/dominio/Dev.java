@@ -1,8 +1,6 @@
 package br.com.dio.desafio.dominio;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Dev {
 
@@ -24,16 +22,31 @@ public class Dev {
     //Regra de Negócio
     public void inscreverBootcamp(Bootcamp bootcamp){
 
+        this.conteudosInscritos.addAll(bootcamp.getConteudos());
+        bootcamp.getDevsInscritos().add(this);
+
     }
 
     public void progredir(){
 
+        Optional<Conteudo> conteudo = this.conteudosConcluidos.stream().findFirst();
+        if(conteudo.isPresent()){
+            this.conteudosConcluidos.add(conteudo.get());
+            this.conteudosInscritos.remove(conteudo.get());
+        } else {
 
+            System.err.println("Você não está matriculado em nenhum conteúdo");
+
+        }
     }
 
-    public void calcularTotalXp(){
+    public double calcularTotalXp(){
 
+        double soma = this.conteudosConcluidos.stream()
+                .mapToDouble(Conteudo::calcularXP)
+                .sum();
 
+        return soma;
     }
 
     //Métodos Especiais
